@@ -1,1 +1,48 @@
-{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"name":"araclab_interview_app.py","provenance":[],"collapsed_sections":[],"authorship_tag":"ABX9TyMN7LbZaoPw6Fb0sGL0wjoE"},"kernelspec":{"name":"python3","display_name":"Python 3"},"language_info":{"name":"python"}},"cells":[{"cell_type":"code","execution_count":1,"metadata":{"colab":{"base_uri":"https://localhost:8080/"},"id":"0_RpBIioGlEY","executionInfo":{"status":"ok","timestamp":1650242357024,"user_tz":240,"elapsed":3396,"user":{"displayName":"Edward Sung","userId":"01130766795911833005"}},"outputId":"8a2ef20d-b499-431e-df55-37330fe6c281"},"outputs":[{"output_type":"stream","name":"stderr","text":["2022-04-18 00:39:14.485 INFO    numexpr.utils: NumExpr defaulting to 2 threads.\n","2022-04-18 00:39:17.008 \n","  \u001b[33m\u001b[1mWarning:\u001b[0m to view this Streamlit app on a browser, run it with the following\n","  command:\n","\n","    streamlit run /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py [ARGUMENTS]\n","/usr/local/lib/python3.7/dist-packages/sklearn/base.py:444: UserWarning: X has feature names, but RandomForestClassifier was fitted without feature names\n","  f\"X has feature names, but {self.__class__.__name__} was fitted without\"\n","/usr/local/lib/python3.7/dist-packages/sklearn/base.py:444: UserWarning: X has feature names, but RandomForestClassifier was fitted without feature names\n","  f\"X has feature names, but {self.__class__.__name__} was fitted without\"\n"]}],"source":["import streamlit as st\n","import pandas as pd\n","from sklearn import datasets\n","from sklearn.ensemble import RandomForestClassifier\n","\n","st.write(\"\"\"\n","# Simple Iris Flower Prediction App\n","This app predicts the **Iris flower** type!\n","\"\"\")\n","\n","st.sidebar.header('User Input Parameters')\n","\n","def user_input_features():\n","    sepal_length = st.sidebar.slider('Sepal length', 4.3, 7.9, 5.4)\n","    sepal_width = st.sidebar.slider('Sepal width', 2.0, 4.4, 3.4)\n","    petal_length = st.sidebar.slider('Petal length', 1.0, 6.9, 1.3)\n","    petal_width = st.sidebar.slider('Petal width', 0.1, 2.5, 0.2)\n","    data = {'sepal_length': sepal_length,\n","            'sepal_width': sepal_width,\n","            'petal_length': petal_length,\n","            'petal_width': petal_width}\n","    features = pd.DataFrame(data, index=[0])\n","    return features\n","\n","df = user_input_features()\n","\n","st.subheader('User Input parameters')\n","st.write(df)\n","\n","iris = datasets.load_iris()\n","X = iris.data\n","Y = iris.target\n","\n","clf = RandomForestClassifier()\n","clf.fit(X, Y)\n","\n","prediction = clf.predict(df)\n","prediction_proba = clf.predict_proba(df)\n","\n","st.subheader('Class labels and their corresponding index number')\n","st.write(iris.target_names)\n","\n","st.subheader('Prediction')\n","st.write(iris.target_names[prediction])\n","#st.write(prediction)\n","\n","st.subheader('Prediction Probability')\n","st.write(prediction_proba)"]}]}
+import streamlit as st
+import pandas as pd
+from sklearn import datasets
+from sklearn.ensemble import RandomForestClassifier
+
+st.write("""
+# Simple Iris Flower Prediction App
+This app predicts the **Iris flower** type!
+""")
+
+st.sidebar.header('User Input Parameters')
+
+def user_input_features():
+    sepal_length = st.sidebar.slider('Sepal length', 4.3, 7.9, 5.4)
+    sepal_width = st.sidebar.slider('Sepal width', 2.0, 4.4, 3.4)
+    petal_length = st.sidebar.slider('Petal length', 1.0, 6.9, 1.3)
+    petal_width = st.sidebar.slider('Petal width', 0.1, 2.5, 0.2)
+    data = {'sepal_length': sepal_length,
+            'sepal_width': sepal_width,
+            'petal_length': petal_length,
+            'petal_width': petal_width}
+    features = pd.DataFrame(data, index=[0])
+    return features
+
+df = user_input_features()
+
+st.subheader('User Input parameters')
+st.write(df)
+
+iris = datasets.load_iris()
+X = iris.data
+Y = iris.target
+
+clf = RandomForestClassifier()
+clf.fit(X, Y)
+
+prediction = clf.predict(df)
+prediction_proba = clf.predict_proba(df)
+
+st.subheader('Class labels and their corresponding index number')
+st.write(iris.target_names)
+
+st.subheader('Prediction')
+st.write(iris.target_names[prediction])
+#st.write(prediction)
+
+st.subheader('Prediction Probability')
+st.write(prediction_proba)
