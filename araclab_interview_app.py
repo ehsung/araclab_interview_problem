@@ -1,19 +1,23 @@
-import yfinance as yf
 import streamlit as st
+import time
+import numpy as np
 
-st.write("""
-# Simple Stock Price App
-Shown are the stock closing price and volume of Google!
-""")
+progress_bar = st.sidebar.progress(0)
+status_text = st.sidebar.empty()
+last_rows = np.random.randn(1, 1)
+chart = st.line_chart(last_rows)
 
-# https://towardsdatascience.com/how-to-get-stock-data-using-python-c0de1df17e75
-#define the ticker symbol
-tickerSymbol = 'GOOGL'
-#get data on this ticker
-tickerData = yf.Ticker(tickerSymbol)
-#get the historical prices for this ticker
-tickerDf = tickerData.history(period='1d', start='2010-5-31', end='2020-5-31')
-# Open	High	Low	Close	Volume	Dividends	Stock Splits
+for i in range(1, 101):
+    new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
+    status_text.text("%i%% Complete" % i)
+    chart.add_rows(new_rows)
+    progress_bar.progress(i)
+    last_rows = new_rows
+    time.sleep(0.05)
 
-st.line_chart(tickerDf.Close)
-st.line_chart(tickerDf.Volume)
+progress_bar.empty()
+
+# Streamlit widgets automatically run the script from top to bottom. Since
+# this button is not connected to any other logic, it just causes a plain
+# rerun.
+st.button("Re-run")
